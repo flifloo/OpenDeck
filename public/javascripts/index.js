@@ -6,7 +6,9 @@ socket.on("connected", () => {
     socket.emit("getDeck");
 });
 
-socket.on("getDeck", data => {
+socket.on("getDeck", d => {
+    console.log(d);
+    let data = d.data, name = d.name;
     deck.innerHTML = "";
 
     for (let x = 0; x < data.x; x++) {
@@ -22,7 +24,7 @@ socket.on("getDeck", data => {
 
     for (const [x, cols] of Object.entries(data.rows))
         for (const [y, col] of Object.entries(cols)) {
-            const e = document.getElementById(`r${x}c${y}`);
+            let e = document.getElementById(`r${x}c${y}`);
             if (e) {
                 if (col.image)
                     e.insertAdjacentHTML("beforeend", `<img src="${col.image}" alt="${col.text}">`);
@@ -31,7 +33,7 @@ socket.on("getDeck", data => {
 
                 e.addEventListener("click", ev => {
                     ev.stopPropagation();
-                    socket.emit("trigger", [x, y]);
+                    socket.emit("trigger", [name, x, y]);
                 })
             }
         }
