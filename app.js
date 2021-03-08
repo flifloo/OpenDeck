@@ -4,9 +4,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const sassMiddleware = require("node-sass-middleware");
-const jsMiddleware = require("./middleware/jsMiddleware")
-
-const indexRouter = require("./routes/index");
+const jsMiddleware = require("./middleware/jsMiddleware");
 
 const app = express();
 
@@ -25,10 +23,11 @@ app.use(sassMiddleware({
   indentedSyntax: true, // true = .sass and false = .scss
   sourceMap: true
 }));
-app.use(jsMiddleware("/javascripts/materialize.js", "materialize-css/dist/js/materialize"))
+app.use(jsMiddleware("/javascripts/materialize.js", "materialize-css/dist/js/materialize"));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
+app.use("/", require("./routes/index"));
+app.use("/settings", require("./routes/settings"));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

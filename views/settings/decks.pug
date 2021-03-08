@@ -1,0 +1,28 @@
+extends ./settings
+
+block settings
+    .input-field
+        select#deck-select
+            option(value="default" selected) Default
+        label Deck
+
+    .container#deck
+
+    #modal.modal
+        .modal-content
+            .row
+                form.col.s12
+                    .row
+                        .input-field.col.s12
+                            input#title(type="text" name="text" required).validate
+                            label(for="title") Text
+                    .row
+                        .input-field.col.s12
+                            select#type(name="type" required).validate
+                            label(for="type") Type
+                    #customs
+        .modal-footer
+            a.modal-close.waves-effect.waves-red.btn-flat(href="#!") Cancel
+            a#save.modal-close.waves-effect.waves-green.btn-flat Save
+
+    script(src="/javascripts/settings/decks.js")
