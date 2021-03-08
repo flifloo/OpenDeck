@@ -3,8 +3,7 @@ html
   head
     title= "OpenDeck" + (title ? " - " + title: "")
     link(rel="stylesheet", href="/stylesheets/style.css")
-  body
-    block content
     script(src="/javascripts/materialize.js")
     script(src="/socket.io/socket.io.js")
-    script(src="/javascripts/index.js")
+  body
+    block content

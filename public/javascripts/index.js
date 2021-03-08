@@ -7,7 +7,6 @@ socket.on("connected", () => {
 });
 
 socket.on("getDeck", d => {
-    console.log(d);
     let data = d.data, name = d.name;
     deck.innerHTML = "";
 
