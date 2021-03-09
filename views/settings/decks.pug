@@ -1,9 +1,10 @@
 extends ./settings
 
 block settings
-    .input-field
-        select#deck-select
-        label Deck
+    .container
+        .input-field
+            select#deck-select
+            label Deck
 
     .container#deck
 
@@ -70,4 +71,4 @@ block settings
             button(data-target="modalAdd")#clearAdd.modal-close.waves-effect.waves-grey.btn-flat Cancel
             a#add.waves-effect.waves-green.btn-flat Save
 
-    script(src="/javascripts/settings/decks.js")
+    script(src="/javascripts/settings/decks.js" type="module")

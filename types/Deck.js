@@ -13,9 +13,10 @@ class Deck extends Base {
     static fields() {
         return {
             deck: {
-                "type": "select",
-                "options": Object.keys(db.decks),
-                "name": "Deck"
+                type: "select",
+                options: Object.keys(db.decks),
+                name: "Deck",
+                required: true,
             }
         };
     }

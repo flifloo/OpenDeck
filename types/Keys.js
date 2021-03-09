@@ -9,6 +9,7 @@ class Keys extends Base {
         keys: {
             type: "text",
             name: "Keys",
+            required: true,
             helper: "Key separated by a comma, if combo use +"
         }
     };

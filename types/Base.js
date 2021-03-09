@@ -21,27 +21,33 @@ class Base {
         if (!(position[0] in db.decks[name].rows))
             db.decks[name].rows[position[0]] = {};
         db.decks[name].rows[position[0]][position[1]] = this.toJSON();
-        Base.#write()
+        Base.write()
+    }
+
+    static saveConfig(type, configuration) {
+        db.types[type] = configuration;
+        Base.write();
     }
 
     remove(name, position) {
         if (position[0] in db.decks[name].rows && position[1] in db.decks[name].rows[position[0]]) {
             delete db.decks[name].rows[position[0]][position[1]];
-            Base.#write();
+            Base.write();
             return true;
         }
         return false;
     }
 
-    static #write() {
+    static write() {
         fs.writeFileSync("./db.json", JSON.stringify(db));
     }
 
-    static staticToJSON(name, type, fields) {
+    static staticToJSON(name, type, fields, config) {
         return {
             "name": name,
             "type": type,
-            "fields": fields
+            "fields": fields,
+            "configuration": config
         }
     }
 

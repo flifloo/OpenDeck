@@ -5,6 +5,8 @@ block content
         .nav-wrapper
             a.brand-logo.right(href="/") OpenDeck
             ul#nav-mobile.left.hide-on-med-and-down
-                li
+                li(class=path==="/settings"? "active": "")
                     a(href="/settings") Decks
+                li(class=path==="/settings/config"? "active": "")
+                    a(href="/settings/config") Configuration
     block settings

@@ -7,7 +7,8 @@ class ExecCommand extends Base {
     static fields = {
         cmd: {
             type: "text",
-            name: "Command"
+            name: "Command",
+            required: true
         }
     };
 

@@ -3,7 +3,8 @@ const db = require("../db.json");
 const types = {
     "execCommand": require("./ExecCommand"),
     "deck": require("./Deck"),
-    "keys": require("./Keys")
+    "keys": require("./Keys"),
+    "obs": require("./OBS")
 };
 
 module.exports.types = types;

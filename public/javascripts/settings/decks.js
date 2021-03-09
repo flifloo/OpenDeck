@@ -1,3 +1,5 @@
+import { inputFieldMaker } from "/javascripts/tools/formMaker.js"
+
 const socket = io();
 const deckSelect = document.getElementById("deck-select");
 const deck = document.getElementById("deck");
@@ -217,37 +219,13 @@ function customFields(values) {
     customs.innerHTML = "";
     let t = types.find(v => v.type === type.value);
     for (const [name, field] of Object.entries(t.fields)) {
-        let e;
-        switch (field.type) {
-            case "text":
-                e = document.createElement("input");
-                e.type = "text";
-                break;
-            case "select":
-                e = document.createElement("select");
-                for (let option of field.options)
-                    e.insertAdjacentHTML("beforeend", `<option value="${option}">${option}</option>`);
-                break;
-        }
-        e.name = name;
-        e.id = name;
-        e.required = true;
-        e.classList.add("validate");
-        let d = document.createElement("div");
-        d.classList.add("input-field");
-        d.insertAdjacentElement("beforeend", e);
-        d.insertAdjacentHTML("beforeend", `<label for="${name}">${field.name}</label>`);
-        if (field.helper)
-            d.insertAdjacentHTML("beforeend", `<span class="helper-text">${field.helper}</span>`);
-        customs.insertAdjacentElement("beforeend", d);
-        if (values && name in values) {
-            e.value = values[name];
-            if (field.type === "select")
-                e.querySelector(`option[value=${values[name]}]`).selected = true;
-        }
+        if (values && name in values)
+            field.value = values[name];
+        customs.insertAdjacentElement("beforeend", inputFieldMaker(type.value, field.type, name, field));
         if (field.type === "select") {
-            M.FormSelect.init(e);
-            e.style.display = "none";
+            const sel = customs.querySelector("select");
+            M.FormSelect.init(sel);
+            sel.style.display = "none";
         }
     }
     M.updateTextFields();
