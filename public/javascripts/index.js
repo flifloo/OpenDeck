@@ -58,6 +58,23 @@ deckSelect.addEventListener("change", ev => {
     socket.emit("getDeck", deckSelect.value);
 });
 
+socket.on("addDeck", data => {
+    if (data) {
+        deckSelect.insertAdjacentHTML("beforeend", `<option value="${data}">${data}</option>`);
+        M.FormSelect.init(deckSelect);
+    }
+});
+
+socket.on("deleteDeck", data => {
+    if (data) {
+        const curr = deckSelect.value;
+        deckSelect.querySelector(`option[value=${data}]`).remove();
+        M.FormSelect.init(deckSelect);
+        if (data === curr)
+            socket.emit("getDeck");
+    }
+});
+
 function setSlot(name, data, x, y) {
     let e = document.getElementById(`r${x}c${y}`);
 

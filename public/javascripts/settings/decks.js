@@ -1,14 +1,17 @@
 const socket = io();
 const deckSelect = document.getElementById("deck-select");
 const deck = document.getElementById("deck");
-const modal = document.getElementById("modal");
+const modalEdit = document.getElementById("modalEdit");
+const modalAdd = document.getElementById("modalAdd");
+const modalDelete = document.getElementById("modalDelete");
 const type = document.getElementById("type");
 const title = document.getElementById("title");
 const image = document.getElementById("image");
 const upload = document.getElementById("upload");
 const customs = document.getElementById("customs");
-const form = modal.querySelector("form");
-let modalInstance, types, slot;
+const form = modalEdit.querySelector("form");
+const addForm = modalAdd.querySelector("form");
+let modalInstance, modalAddInstance, modalDeleteInstance, types, slot;
 
 
 socket.on("connected", () => {
@@ -20,6 +23,10 @@ socket.on("connected", () => {
 
 socket.on("getDeck", d => {
     let data = d.data, name = d.name;
+    modalDelete.querySelector("h4").innerText = modalDelete.querySelector("h4").innerText.split(":")[0] + ": " + name;
+    deckSelect.querySelectorAll(`option[selected]`).forEach(o => o.selected = false);
+    deckSelect.querySelectorAll(`option[value=${name}]`).forEach(o => o.selected = true);
+    M.FormSelect.init(deckSelect);
     deck.innerHTML = "";
 
     for (let x = 0; x < data.x; x++) {
@@ -52,14 +59,14 @@ socket.on("getDeck", d => {
 socket.on("getDecks", data => {
     deckSelect.innerHTML = "";
     for (const deck of data)
-        deckSelect.insertAdjacentHTML("beforeend", `<option name="${deck}">${deck}</option>`);
+        deckSelect.insertAdjacentHTML("beforeend", `<option value="${deck}">${deck}</option>`);
     M.FormSelect.init(deckSelect);
 });
 
 socket.on("getSlot", data => {
     slot = data;
     customs.innerHTML = "";
-    modal.querySelectorAll("#type>option[selected]").forEach(e => e.selected = false);
+    modalEdit.querySelectorAll("#type>option[selected]").forEach(e => e.selected = false);
 
     if (data.data) {
         title.value = data.data.text;
@@ -105,6 +112,31 @@ socket.on("uploadImage", data => {
         image.value = data
 });
 
+socket.on("addDeck", data => {
+    if (data.error)
+        alert(data.error);
+    else {
+        deckSelect.insertAdjacentHTML("beforeend", `<option value="${data}">${data}</option>`);
+        M.FormSelect.init(deckSelect);
+        modalAddInstance.close();
+        clearAdd();
+        socket.emit("getDeck", data);
+    }
+});
+
+socket.on("deleteDeck", data => {
+    if (data.error)
+        alert(data.error);
+    else {
+        const curr = deckSelect.value;
+        deckSelect.querySelector(`option[value=${data}]`).remove();
+        M.FormSelect.init(deckSelect);
+        modalDeleteInstance.close();
+        if (data === curr)
+            socket.emit("getDeck");
+    }
+});
+
 upload.addEventListener("dragover", ev => {
     ev.preventDefault();
 }, true);
@@ -144,6 +176,25 @@ document.getElementById("save").addEventListener("click", ev => {
     socket.emit("setSlot", {name: slot.name, data: slot.data, position: slot.position});
 });
 
+document.getElementById("delete").addEventListener("click", ev => {
+    ev.stopPropagation();
+    socket.emit("deleteDeck", deckSelect.value);
+});
+
+document.getElementById("add").addEventListener("click", ev => {
+    ev.stopPropagation();
+
+    let data = {};
+    for (const e of new FormData(addForm))
+        data[e[0]] = e[1];
+
+    socket.emit("addDeck", data);
+});
+
+document.getElementById("clearAdd").addEventListener("click", () => {
+    clearAdd();
+});
+
 document.getElementById("remove").addEventListener("click", ev => {
     ev.stopPropagation();
     socket.emit("setSlot", {name: slot.name, data: null, position: slot.position});
@@ -156,7 +207,10 @@ type.addEventListener("change", ev => {
 
 document.addEventListener("DOMContentLoaded", () => {
     M.AutoInit();
-    modalInstance = M.Modal.getInstance(modal);
+    modalInstance = M.Modal.getInstance(modalEdit);
+    modalAddInstance = M.Modal.getInstance(modalAdd);
+    modalDeleteInstance = M.Modal.getInstance(modalDelete);
+    M.FloatingActionButton.init(document.querySelector(".fixed-action-btn"), {hoverEnabled: false})
 });
 
 function customFields(values) {
@@ -208,5 +262,12 @@ function uploadImage(files) {
         alert("Not a image !");
     else
         socket.emit("uploadImage", files[0]);
+    M.updateTextFields();
+}
+
+function clearAdd() {
+    document.getElementById("name").value = "";
+    document.getElementById("x").value = "10";
+    document.getElementById("y").value = "5";
     M.updateTextFields();
 }

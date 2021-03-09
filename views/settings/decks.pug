@@ -7,7 +7,18 @@ block settings
 
     .container#deck
 
-    #modal.modal
+    .fixed-action-btn.no-autoinit
+        a.btn-floating.btn-large.green
+            i.large.material-icons menu
+        ul
+            li
+                button(data-target="modalDelete").btn-floating.red.modal-trigger
+                    i.material-icons delete
+            li
+                button(data-target="modalAdd").btn-floating.blue.modal-trigger
+                    i.material-icons add
+
+    #modalEdit.modal
         .modal-content
             .row
                 form.col.s12
@@ -31,5 +42,32 @@ block settings
             a#remove.modal-close.waves-effect.waves-red.btn-flat Remove
             a.modal-close.waves-effect.waves-grey.btn-flat(href="#!") Cancel
             a#save.modal-close.waves-effect.waves-green.btn-flat Save
+
+    #modalDelete.modal
+        .modal-content
+            h4 Are you sure you want to delete:
+        .modal-footer
+            button(data-target="modalDelete").modal-close.waves-effect.waves-grey.btn-flat Cancel
+            a#delete.modal-close.waves-effect.waves-red.btn-flat Yes
+
+    #modalAdd.modal
+        .modal-content
+            h4 Create new deck
+            .row
+                form.col.s12
+                    .row
+                        .input-field.col.s12
+                            input#name(type="text" name="name" minlength=1 required).validate
+                            label(for="name") Deck name
+                    .row
+                        .input-field.col.s6
+                            input#x(type="number" min="1" name="x" value="10" required).validate
+                            label(for="x") X
+                        .input-field.col.s6
+                            input#y(type="number" min="1" name="y" value="5" required).validate
+                            label(for="y") Y
+        .modal-footer
+            button(data-target="modalAdd")#clearAdd.modal-close.waves-effect.waves-grey.btn-flat Cancel
+            a#add.waves-effect.waves-green.btn-flat Save
 
     script(src="/javascripts/settings/decks.js")
