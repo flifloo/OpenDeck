@@ -159,6 +159,8 @@ function customFields(values) {
         d.classList.add("input-field");
         d.insertAdjacentElement("beforeend", e);
         d.insertAdjacentHTML("beforeend", `<label for="${name}">${field.name}</label>`);
+        if (field.helper)
+            d.insertAdjacentHTML("beforeend", `<span class="helper-text">${field.helper}</span>`);
         customs.insertAdjacentElement("beforeend", d);
         if (values && name in values) {
             e.value = values[name];
