@@ -1,5 +1,6 @@
 module.exports = socket => {
     socket.on("getDeck", require("./getDeck")(socket));
+    socket.on("getDecks", require("./getDecks")(socket));
     socket.on("getSlot", require("./getSlot")(socket));
     socket.on("getType", require("./getType")(socket));
     socket.on("setSlot", require("./setSlot")(socket));

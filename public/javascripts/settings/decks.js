@@ -1,4 +1,5 @@
 const socket = io();
+const deckSelect = document.getElementById("deck-select");
 const deck = document.getElementById("deck");
 const modal = document.getElementById("modal");
 const type = document.getElementById("type");
@@ -11,6 +12,7 @@ let modalInstance, types, slot;
 socket.on("connected", () => {
     console.log("Connected !");
     socket.emit("getDeck");
+    socket.emit("getDecks");
     socket.emit("getType");
 });
 
@@ -45,6 +47,13 @@ socket.on("getDeck", d => {
         }
 });
 
+socket.on("getDecks", data => {
+    deckSelect.innerHTML = "";
+    for (const deck of data)
+        deckSelect.insertAdjacentHTML("beforeend", `<option name="${deck}">${deck}</option>`);
+    M.FormSelect.init(deckSelect);
+});
+
 socket.on("getSlot", data => {
     slot = data;
     customs.innerHTML = "";
@@ -75,14 +84,20 @@ socket.on("setSlot", data => {
     else {
         modalInstance.close();
         let e = document.getElementById(`r${data.position[0]}c${data.position[1]}`);
-        if (e && data.data) {
-            if (data.data.image)
-                e.insertAdjacentHTML("beforeend", `<img src="${data.data.image}" alt="${data.data.text}">`);
-            else if (data.data.text)
-                e.insertAdjacentHTML("beforeend", `<p>${data.data.text}</p>`);
-        } else if (e)
+        if (e) {
             e.innerHTML = "";
+            if (data.data)
+                if (data.data.image)
+                    e.insertAdjacentHTML("beforeend", `<img src="${data.data.image}" alt="${data.data.text}">`);
+                else if (data.data.text)
+                    e.insertAdjacentHTML("beforeend", `<p>${data.data.text}</p>`);
+        }
     }
+});
+
+deckSelect.addEventListener("change", ev => {
+    ev.stopPropagation();
+    socket.emit("getDeck", deckSelect.value);
 });
 
 document.getElementById("save").addEventListener("click", ev => {

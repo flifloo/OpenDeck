@@ -4,4 +4,20 @@ block content
   h1.center OpenDeck
   .container#deck
 
+  .fixed-action-btn
+    a(href="#modal").btn-floating.btn-large.green.modal-trigger
+      i.large.material-icons toc
+    ul
+      li
+        a(href="/settings").btn-floating.red
+          i.material-icons settings
+
+  #modal.modal
+    .modal-content
+      .input-field
+        select#deck-select
+        label Deck
+    .modal-footer
+      a#save.modal-close.waves-effect.waves-grey.btn-flat(href="#!") Close
+
   script(src="/javascripts/index.js")
