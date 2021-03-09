@@ -45,6 +45,14 @@ socket.on("setSlot", data => {
         setSlot(data.name, data.data, ...data.position)
 });
 
+document.getElementById("fullScreen").addEventListener("click", ev => {
+    ev.stopPropagation();
+    if (!document.fullscreenElement)
+        document.documentElement.requestFullscreen();
+    else if (document.exitFullscreen)
+            document.exitFullscreen();
+});
+
 deckSelect.addEventListener("change", ev => {
     ev.stopPropagation();
     socket.emit("getDeck", deckSelect.value);
@@ -74,4 +82,5 @@ function setSlot(name, data, x, y) {
 
 document.addEventListener("DOMContentLoaded", () => {
     M.AutoInit();
+    M.FloatingActionButton.init(document.querySelector(".fixed-action-btn"), {hoverEnabled: false})
 });

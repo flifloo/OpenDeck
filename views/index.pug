@@ -4,13 +4,19 @@ block content
   h1.center OpenDeck
   .container#deck
 
-  .fixed-action-btn
-    a(href="#modal").btn-floating.btn-large.green.modal-trigger
-      i.large.material-icons toc
+  .fixed-action-btn.no-autoinit
+    a.btn-floating.btn-large.green
+      i.large.material-icons menu
     ul
       li
         a(href="/settings").btn-floating.red
           i.material-icons settings
+      li
+        a(href="#modal").btn-floating.blue.modal-trigger
+          i.material-icons toc
+      li
+        a#fullScreen.btn-floating.yellow
+          i.material-icons fullscreen
 
   #modal.modal
     .modal-content
