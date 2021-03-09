@@ -39,7 +39,7 @@ socket.on("setSlot", data => {
 
 function setSlot(name, data, x, y) {
     let e = document.getElementById(`r${x}c${y}`);
-    if (e) {
+    if (e && data) {
         if (data.image)
             e.insertAdjacentHTML("beforeend", `<img src="${data.image}" alt="${data.text}">`);
         else if (data.text)
@@ -49,5 +49,9 @@ function setSlot(name, data, x, y) {
             ev.stopPropagation();
             socket.emit("trigger", [name, x, y]);
         })
+    } else if (e) {
+        let d = document.createElement("div");
+        d.id = e.id;
+        e.replaceWith(d);
     }
 }

@@ -7,6 +7,7 @@ const customs = document.getElementById("customs");
 const form = modal.querySelector("form");
 let modalInstance, types, slot;
 
+
 socket.on("connected", () => {
     console.log("Connected !");
     socket.emit("getDeck");
@@ -74,12 +75,12 @@ socket.on("setSlot", data => {
     else {
         modalInstance.close();
         let e = document.getElementById(`r${data.position[0]}c${data.position[1]}`);
-        if (e) {
+        if (e && data.data) {
             if (data.data.image)
                 e.insertAdjacentHTML("beforeend", `<img src="${data.data.image}" alt="${data.data.text}">`);
             else if (data.data.text)
                 e.insertAdjacentHTML("beforeend", `<p>${data.data.text}</p>`);
-        } else
+        } else if (e)
             e.innerHTML = "";
     }
 });
@@ -102,6 +103,11 @@ document.getElementById("save").addEventListener("click", ev => {
     slot.data.options = data;
 
     socket.emit("setSlot", {name: slot.name, data: slot.data, position: slot.position});
+});
+
+document.getElementById("remove").addEventListener("click", ev => {
+    ev.stopPropagation();
+    socket.emit("setSlot", {name: slot.name, data: null, position: slot.position});
 });
 
 type.addEventListener("change", ev => {

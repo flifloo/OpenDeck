@@ -21,6 +21,19 @@ class Base {
         if (!(position[0] in db.decks[name].rows))
             db.decks[name].rows[position[0]] = {};
         db.decks[name].rows[position[0]][position[1]] = this.toJSON();
+        Base.#write()
+    }
+
+    remove(name, position) {
+        if (position[0] in db.decks[name].rows && position[1] in db.decks[name].rows[position[0]]) {
+            delete db.decks[name].rows[position[0]][position[1]];
+            Base.#write();
+            return true;
+        }
+        return false;
+    }
+
+    static #write() {
         fs.writeFileSync("./db.json", JSON.stringify(db));
     }
 
