@@ -24,10 +24,12 @@ socket.on("getType", data => {
             save.innerText = "Save";
             save.addEventListener("click", ev => {
                 ev.stopPropagation();
-                let data = {};
-                for (const e of new FormData(form))
-                    data[e[0]] = e[1];
-                socket.emit("setTypeConfig", {type: type.type, configuration: data})
+                if (form.reportValidity()) {
+                    let data = {};
+                    for (const e of new FormData(form))
+                        data[e[0]] = e[1];
+                    socket.emit("setTypeConfig", {type: type.type, configuration: data})
+                }
             });
             formRow.insertAdjacentElement("beforeend", save);
 

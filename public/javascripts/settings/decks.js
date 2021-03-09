@@ -160,22 +160,23 @@ deckSelect.addEventListener("change", ev => {
 
 document.getElementById("save").addEventListener("click", ev => {
     ev.stopPropagation();
+    if (form.reportValidity()) {
+        let data = {};
+        for (const e of new FormData(form))
+            data[e[0]] = e[1];
 
-    let data = {};
-    for (const e of new FormData(form))
-        data[e[0]] = e[1];
+        if (!slot.data)
+            slot.data = {};
 
-    if (!slot.data)
-        slot.data = {};
+        for (const k of ["text", "type", "image"]) {
+            slot.data[k] = data[k];
+            delete data[k];
+        }
 
-    for (const k of ["text", "type", "image"]) {
-        slot.data[k] = data[k];
-        delete data[k];
+        slot.data.options = data;
+
+        socket.emit("setSlot", {name: slot.name, data: slot.data, position: slot.position});
     }
-
-    slot.data.options = data;
-
-    socket.emit("setSlot", {name: slot.name, data: slot.data, position: slot.position});
 });
 
 document.getElementById("delete").addEventListener("click", ev => {
