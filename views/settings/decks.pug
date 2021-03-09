@@ -13,8 +13,15 @@ block settings
                 form.col.s12
                     .row
                         .input-field.col.s12
-                            input#title(type="text" name="text" required).validate
+                            input#title(type="text" name="text" minlength=1 required).validate
                             label(for="title") Text
+                    .row
+                        .input-field.col.s8
+                            input#image(type="text" name="image").validate
+                            label(for="image") Image
+                            span.helper-text File URL or upload
+                        .input-field.col.s4
+                            input#upload(type="file" accept="image/*" multiple=false)
                     .row
                         .input-field.col.s12
                             select#type(name="type" required).validate

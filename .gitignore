@@ -108,3 +108,9 @@ dist
 
 # Compiled SCSS
 public/stylesheets/*.css*
+
+# Json DB
+db.json
+
+# Uploaded images
+public/images/upload/

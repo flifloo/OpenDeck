@@ -4,6 +4,8 @@ const deck = document.getElementById("deck");
 const modal = document.getElementById("modal");
 const type = document.getElementById("type");
 const title = document.getElementById("title");
+const image = document.getElementById("image");
+const upload = document.getElementById("upload");
 const customs = document.getElementById("customs");
 const form = modal.querySelector("form");
 let modalInstance, types, slot;
@@ -61,10 +63,11 @@ socket.on("getSlot", data => {
 
     if (data.data) {
         title.value = data.data.text;
+        image.value = data.data.image ? data.data.image : "";
         type.querySelector(`option[value=${data.data.type}]`).selected = true;
         customFields(data.data.options);
     } else
-        type.value = title.value = "";
+        type.value = title.value = image.value = "";
 
     M.updateTextFields();
     M.FormSelect.init(type);
@@ -95,6 +98,27 @@ socket.on("setSlot", data => {
     }
 });
 
+socket.on("uploadImage", data => {
+    if (data.error)
+        console.log(data.error);
+    else if (data)
+        image.value = data
+});
+
+upload.addEventListener("dragover", ev => {
+    ev.preventDefault();
+}, true);
+
+upload.addEventListener("drop", ev => {
+    ev.preventDefault();
+    uploadImage(ev.dataTransfer.files)
+}, true);
+
+upload.addEventListener("change", ev => {
+    ev.stopPropagation();
+    uploadImage(upload.files)
+});
+
 deckSelect.addEventListener("change", ev => {
     ev.stopPropagation();
     socket.emit("getDeck", deckSelect.value);
@@ -110,7 +134,7 @@ document.getElementById("save").addEventListener("click", ev => {
     if (!slot.data)
         slot.data = {};
 
-    for (const k of ["text", "type"]) { //image
+    for (const k of ["text", "type", "image"]) {
         slot.data[k] = data[k];
         delete data[k];
     }
@@ -172,5 +196,17 @@ function customFields(values) {
             e.style.display = "none";
         }
     }
+    M.updateTextFields();
+}
+
+function uploadImage(files) {
+    if (files.length === 0)
+        alert("No image !");
+    else if (files.length > 1)
+        alert("Only one image !");
+    else if (!files[0].type.match(/image.*/))
+        alert("Not a image !");
+    else
+        socket.emit("uploadImage", files[0]);
     M.updateTextFields();
 }
